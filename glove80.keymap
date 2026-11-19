@@ -1,0 +1,779 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/rgb.h>
+
+#define HYPER LC(LS(LG(LALT)))
+#define MOD_SHORTCUT (MOD_LCTL|MOD_RCTL|MOD_LALT|MOD_LGUI|MOD_RGUI)
+
+// layers
+#define DEFAULT 0
+#define LOWER 1
+#define MAGIC 2
+#define FACTORY_TEST 3
+
+/ {
+    behaviors {
+        // For the "layer" key, it'd nice to be able to use it as either a shift or a toggle.
+        // Configure it as a tap dance, so the first tap (or hold) is a &mo and the second tap is a &to
+        layer_td: tap_dance_0 {
+            compatible = "zmk,behavior-tap-dance";
+            label = "LAYER_TAP_DANCE";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&mo LOWER>, <&to LOWER>;
+        };
+
+        magic: magic_hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MAGIC_HOLD_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&rgb_ug_status_macro>;
+        };
+
+        // The Swedish host layout places these symbols on different HID keys.
+        // Mod-morph masks the held Shift and emits the requested shifted symbol.
+        dvorak_quote: dvorak_quote {
+            compatible = "zmk,behavior-mod-morph";
+            label = "DVORAK_QUOTE";
+            #binding-cells = <0>;
+            bindings = <&kp BSLH>, <&kp LS(N2)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        dvorak_comma: dvorak_comma {
+            compatible = "zmk,behavior-mod-morph";
+            label = "DVORAK_COMMA";
+            #binding-cells = <0>;
+            bindings = <&kp COMMA>, <&kp NON_US_BSLH>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        dvorak_dot: dvorak_dot {
+            compatible = "zmk,behavior-mod-morph";
+            label = "DVORAK_DOT";
+            #binding-cells = <0>;
+            bindings = <&kp DOT>, <&kp LS(NON_US_BSLH)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        dvorak_semicolon: dvorak_semicolon {
+            compatible = "zmk,behavior-mod-morph";
+            label = "DVORAK_SEMICOLON";
+            #binding-cells = <0>;
+            bindings = <&kp LS(COMMA)>, <&kp LS(DOT)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        // Make it so that numbers are symbols and the numbers are on the shfit
+        // layer
+        symbol_1: symbol_1 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_1";
+            #binding-cells = <0>;
+            bindings = <&kp MINUS>, <&kp N1>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_2: symbol_2 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_2";
+            #binding-cells = <0>;
+            bindings = <&kp RA(N8)>, <&kp N2>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_3: symbol_3 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_3";
+            #binding-cells = <0>;
+            bindings = <&kp RA(N7)>, <&kp N3>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_4: symbol_4 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_4";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N8)>, <&kp N4>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_5: symbol_5 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_5";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N6)>, <&kp N5>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_6: symbol_6 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_6";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N0)>, <&kp N6>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_7: symbol_7 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_7";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N9)>, <&kp N7>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_8: symbol_8 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_8";
+            #binding-cells = <0>;
+            bindings = <&kp RA(N0)>, <&kp N8>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_9: symbol_9 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_9";
+            #binding-cells = <0>;
+            bindings = <&kp RA(N9)>, <&kp N9>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_0: symbol_0 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_0";
+            #binding-cells = <0>;
+            bindings = <&kp LS(BSLH)>, <&kp N0>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        // Ctrl uses the physical QWERTY number keys instead of the symbol output.
+        ctrl_1: ctrl_1 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_1";
+            #binding-cells = <0>;
+            bindings = <&alt_1>, <&kp N1>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_2: ctrl_2 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_2";
+            #binding-cells = <0>;
+            bindings = <&alt_2>, <&kp N2>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_3: ctrl_3 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_3";
+            #binding-cells = <0>;
+            bindings = <&alt_3>, <&kp N3>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_4: ctrl_4 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_4";
+            #binding-cells = <0>;
+            bindings = <&alt_4>, <&kp N4>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_5: ctrl_5 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_5";
+            #binding-cells = <0>;
+            bindings = <&alt_5>, <&kp N5>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_6: ctrl_6 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_6";
+            #binding-cells = <0>;
+            bindings = <&alt_6>, <&kp N6>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_7: ctrl_7 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_7";
+            #binding-cells = <0>;
+            bindings = <&alt_7>, <&kp N7>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_8: ctrl_8 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_8";
+            #binding-cells = <0>;
+            bindings = <&alt_8>, <&kp N8>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_9: ctrl_9 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_9";
+            #binding-cells = <0>;
+            bindings = <&alt_9>, <&kp N9>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_0: ctrl_0 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_0";
+            #binding-cells = <0>;
+            bindings = <&alt_0>, <&kp N0>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        // Ctrl, Left Alt, and Super use physical QWERTY digits and retain real modifiers.
+        alt_1: alt_1 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_1";
+            #binding-cells = <0>;
+            bindings = <&symbol_1>, <&kp N1>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_2: alt_2 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_2";
+            #binding-cells = <0>;
+            bindings = <&symbol_2>, <&kp N2>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_3: alt_3 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_3";
+            #binding-cells = <0>;
+            bindings = <&symbol_3>, <&kp N3>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_4: alt_4 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_4";
+            #binding-cells = <0>;
+            bindings = <&symbol_4>, <&kp N4>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_5: alt_5 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_5";
+            #binding-cells = <0>;
+            bindings = <&symbol_5>, <&kp N5>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_6: alt_6 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_6";
+            #binding-cells = <0>;
+            bindings = <&symbol_6>, <&kp N6>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_7: alt_7 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_7";
+            #binding-cells = <0>;
+            bindings = <&symbol_7>, <&kp N7>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_8: alt_8 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_8";
+            #binding-cells = <0>;
+            bindings = <&symbol_8>, <&kp N8>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_9: alt_9 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_9";
+            #binding-cells = <0>;
+            bindings = <&symbol_9>, <&kp N9>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_0: alt_0 {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_0";
+            #binding-cells = <0>;
+            bindings = <&symbol_0>, <&kp N0>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        symbol_grave: symbol_grave {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_GRAVE";
+            #binding-cells = <0>;
+            bindings = <&kp LS(EQUAL)>, <&kp RA(N4)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_bang: symbol_bang {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_BANG";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N1)>, <&kp LS(N5)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_slash: symbol_slash {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_SLASH";
+            #binding-cells = <0>;
+            bindings = <&kp LS(N7)>, <&kp LS(MINUS)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_minus: symbol_minus {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_MINUS";
+            #binding-cells = <0>;
+            bindings = <&kp FSLH>, <&kp LS(FSLH)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_pipe: symbol_pipe {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_PIPE";
+            #binding-cells = <0>;
+            bindings = <&kp RA(NON_US_BSLH)>, <&kp RA(NON_US_BSLH)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_at: symbol_at {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_AT";
+            #binding-cells = <0>;
+            bindings = <&kp RA(N2)>, <&kp LS(RBKT)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        symbol_backslash: symbol_backslash {
+            compatible = "zmk,behavior-mod-morph";
+            label = "SYMBOL_BACKSLASH";
+            #binding-cells = <0>;
+            bindings = <&kp RA(MINUS)>, <&kp LS(N3)>;
+            mods = <(MOD_LSFT|MOD_RSFT)>;
+        };
+
+        // Ctrl, Left Alt, and Super shortcuts follow physical QWERTY positions.
+        alt_q: alt_q {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_Q";
+            #binding-cells = <0>;
+            bindings = <&dvorak_quote>, <&kp Q>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_w: alt_w {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_W";
+            #binding-cells = <0>;
+            bindings = <&dvorak_comma>, <&kp W>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_e: alt_e {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_E";
+            #binding-cells = <0>;
+            bindings = <&dvorak_dot>, <&kp E>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_r: alt_r {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_R";
+            #binding-cells = <0>;
+            bindings = <&kp P>, <&kp R>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_t: alt_t {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_T";
+            #binding-cells = <0>;
+            bindings = <&kp Y>, <&kp T>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_y: alt_y {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_Y";
+            #binding-cells = <0>;
+            bindings = <&kp F>, <&kp Y>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_u: alt_u {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_U";
+            #binding-cells = <0>;
+            bindings = <&kp G>, <&kp U>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_i: alt_i {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_I";
+            #binding-cells = <0>;
+            bindings = <&kp C>, <&kp I>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_o: alt_o {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_O";
+            #binding-cells = <0>;
+            bindings = <&kp R>, <&kp O>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_p: alt_p {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_P";
+            #binding-cells = <0>;
+            bindings = <&kp L>, <&kp P>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        // A/S/D consume either Alt and emit the Swedish å/ä/ö HID positions.
+        alt_a: alt_a {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_A";
+            #binding-cells = <0>;
+            bindings = <&kp A>, <&kp LBKT>;
+            mods = <(MOD_LALT|MOD_RALT)>;
+        };
+
+        gui_s: gui_s {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GUI_S";
+            #binding-cells = <0>;
+            bindings = <&kp O>, <&kp S>;
+            mods = <(MOD_LGUI|MOD_RGUI)>;
+            keep-mods = <(MOD_LGUI|MOD_RGUI)>;
+        };
+
+        alt_s: alt_s {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_S";
+            #binding-cells = <0>;
+            bindings = <&gui_s>, <&kp SQT>;
+            mods = <(MOD_LALT|MOD_RALT)>;
+        };
+
+        gui_d: gui_d {
+            compatible = "zmk,behavior-mod-morph";
+            label = "GUI_D";
+            #binding-cells = <0>;
+            bindings = <&kp E>, <&kp D>;
+            mods = <(MOD_LGUI|MOD_RGUI)>;
+            keep-mods = <(MOD_LGUI|MOD_RGUI)>;
+        };
+
+        alt_d: alt_d {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_D";
+            #binding-cells = <0>;
+            bindings = <&gui_d>, <&kp SEMI>;
+            mods = <(MOD_LALT|MOD_RALT)>;
+        };
+
+        // Ctrl takes precedence over the Swedish exceptions for Ctrl+Alt shortcuts.
+        ctrl_alt_a: ctrl_alt_a {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_ALT_A";
+            #binding-cells = <0>;
+            bindings = <&alt_a>, <&kp A>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_alt_s: ctrl_alt_s {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_ALT_S";
+            #binding-cells = <0>;
+            bindings = <&alt_s>, <&kp S>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        ctrl_alt_d: ctrl_alt_d {
+            compatible = "zmk,behavior-mod-morph";
+            label = "CTRL_ALT_D";
+            #binding-cells = <0>;
+            bindings = <&alt_d>, <&kp D>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+            keep-mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
+        alt_f: alt_f {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_F";
+            #binding-cells = <0>;
+            bindings = <&kp U>, <&kp F>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_g: alt_g {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_G";
+            #binding-cells = <0>;
+            bindings = <&kp I>, <&kp G>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_h: alt_h {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_H";
+            #binding-cells = <0>;
+            bindings = <&kp D>, <&kp H>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_j: alt_j {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_J";
+            #binding-cells = <0>;
+            bindings = <&kp H>, <&kp J>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_k: alt_k {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_K";
+            #binding-cells = <0>;
+            bindings = <&kp T>, <&kp K>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_l: alt_l {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_L";
+            #binding-cells = <0>;
+            bindings = <&kp N>, <&kp L>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_z: alt_z {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_Z";
+            #binding-cells = <0>;
+            bindings = <&dvorak_semicolon>, <&kp Z>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_x: alt_x {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_X";
+            #binding-cells = <0>;
+            bindings = <&kp Q>, <&kp X>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_c: alt_c {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_C";
+            #binding-cells = <0>;
+            bindings = <&kp J>, <&kp C>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_v: alt_v {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_V";
+            #binding-cells = <0>;
+            bindings = <&kp K>, <&kp V>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_b: alt_b {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_B";
+            #binding-cells = <0>;
+            bindings = <&kp X>, <&kp B>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_n: alt_n {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_N";
+            #binding-cells = <0>;
+            bindings = <&kp B>, <&kp N>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+
+        alt_m: alt_m {
+            compatible = "zmk,behavior-mod-morph";
+            label = "ALT_M";
+            #binding-cells = <0>;
+            bindings = <&kp M>, <&kp M>;
+            mods = <MOD_SHORTCUT>;
+            keep-mods = <MOD_SHORTCUT>;
+        };
+    };
+
+    macros {
+        rgb_ug_status_macro: rgb_ug_status_macro_0 {
+            label = "RGB_UG_STATUS";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&rgb_ug RGB_STATUS>;
+        };
+
+        bt_0: bt_profile_macro_0 {
+            label = "BT_0";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>,
+                  <&bt BT_SEL 0>;
+        };
+
+        bt_1: bt_profile_macro_1 {
+            label = "BT_1";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>,
+                  <&bt BT_SEL 1>;
+        };
+
+        bt_2: bt_profile_macro_2 {
+            label = "BT_2";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>,
+                  <&bt BT_SEL 2>;
+        };
+
+        bt_3: bt_profile_macro_3 {
+            label = "BT_3";
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings
+                = <&out OUT_BLE>,
+                  <&bt BT_SEL 3>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            // ---------------------------------------------------------------------------------------------------------------------------------
+            // |  F1   |  F2 |  F3 |  F4  |  F5  |                                                               |  F6   |  F7   |  F8  |   F9  |  F10 |
+            // |  `    |  +  |  [  |  {   |  (   |  &   |                                                 |  =   |   )   |   }   |  ]   |   *   |   !  |
+            // |  TAB  |  '  |  ,  |  .   |  P   |  Y   |                                                 |  F   |   G   |   C   |  R   |   L   |   /  |
+            // |  ESC  |  A  |  O  |  E   |  U   |  I   |                                                 |  D   |   H   |   T   |  N   |   S   |   -  |
+            // |   |   |  ;  |  Q  |  J   |  K   |  X   | LSHFT | LCTRL | LOWER | | LGUI  | RCTRL | RSHFT |  B   |   M   |   W   |  V   |   Z   | PGUP |
+            // | MAGIC | HOME| END | LEFT | RIGHT|      | SPACE | DEL   | LALT  | | RALT  | RET   | BSPC  |      |  UP   | DOWN  |  @   |   \   | PGDN |
+
+            bindings = <
+            &kp F1         &kp F2   &kp F3      &kp F4      &kp F5                                                                                         &kp F6  &kp F7      &kp F8      &kp F9      &kp F10
+            &symbol_grave  &ctrl_1   &ctrl_2     &ctrl_3     &ctrl_4     &ctrl_5                                                                    &ctrl_6 &ctrl_7 &ctrl_8      &ctrl_9     &ctrl_0     &symbol_bang
+            &kp TAB        &alt_q    &alt_w      &alt_e      &alt_r      &alt_t                                                                     &alt_y &alt_u &alt_i        &alt_o      &alt_p      &symbol_slash
+            &kp ESC        &ctrl_alt_a &ctrl_alt_s &ctrl_alt_d &alt_f   &alt_g                                                                      &alt_h &alt_j &alt_k        &alt_l      &kp S       &symbol_minus
+            &symbol_pipe   &alt_z    &alt_x      &alt_c      &alt_v      &alt_b  &kp LSHFT   &kp LCTRL   &layer_td  &kp LGUI  &kp RCTRL &kp RSHFT   &alt_n &alt_m &kp W        &kp V       &kp Z       &kp PG_UP
+            &magic MAGIC 0 &kp HOME &kp END     &kp LEFT    &kp RIGHT           &kp SPACE   &kp DEL     &kp LALT   &kp RALT  &kp RET   &kp BSPC            &kp UP  &kp DOWN    &symbol_at  &symbol_backslash &kp PG_DN
+            >;
+        };
+
+        lower_layer {
+            bindings = <
+            &kp C_BRI_DN      &kp C_BRI_UP        &kp C_PREV      &kp C_NEXT      &kp C_PP                                                                                                           &kp C_MUTE   &kp C_VOL_DN &kp C_VOL_UP  &none           &kp PAUSE_BREAK
+            &trans            &none               &none           &none           &none           &kp HOME                                                                              &kp LPAR     &kp KP_NUM   &kp KP_EQUAL &kp KP_DIVIDE &kp KP_MULTIPLY &kp PSCRN
+            &trans            &none               &none           &kp UP          &none           &kp END                                                                               &kp RPAR     &kp KP_N7    &kp KP_N8    &kp KP_N9     &kp KP_MINUS    &kp SLCK
+            &trans            &none               &kp LEFT        &kp DOWN        &kp RIGHT       &kp PG_UP                                                                             &kp PRCNT    &kp KP_N4    &kp KP_N5    &kp KP_N6     &kp KP_PLUS     &none
+            &trans            &kp K_CMENU         &none           &kp F11         &kp F12         &kp PG_DN       &trans      &trans      &to DEFAULT &trans      &trans      &trans    &kp COMMA    &kp KP_N1    &kp KP_N2    &kp KP_N3     &kp KP_ENTER    &trans
+            &trans            &kp CAPS            &kp INS         &kp F11         &kp F12                         &trans      &trans      &trans      &trans      &trans      &trans                 &kp KP_N0    &kp KP_N0    &kp KP_DOT    &kp KP_ENTER    &trans
+            >;
+        };
+
+        magic_layer {
+            bindings = <
+            &bt BT_CLR        &none               &none           &none           &none                                                                                                           &none      &none      &none      &none      &bt BT_CLR_ALL
+            &none             &none               &none           &none           &none           &none                                                                                &none      &none      &none      &none      &none      &none
+            &none             &rgb_ug RGB_SPI     &rgb_ug RGB_SAI &rgb_ug RGB_HUI &rgb_ug RGB_BRI &rgb_ug RGB_TOG                                                                      &none      &none      &none      &none      &none      &none
+            &bootloader       &rgb_ug RGB_SPD     &rgb_ug RGB_SAD &rgb_ug RGB_HUD &rgb_ug RGB_BRD &rgb_ug RGB_EFF                                                                      &none      &none      &none      &none      &none      &bootloader
+            &sys_reset        &none               &none           &none           &none           &none           &bt_2     &bt_3     &none            &none     &none     &none       &none      &none      &none      &none      &none      &sys_reset
+            &none             &none               &none           &none           &none                           &bt_0     &bt_1     &out OUT_USB     &none     &none     &none                  &none      &none      &none      &none      &to FACTORY_TEST
+            >;
+        };
+
+        factory_test_layer {
+            bindings = <
+            &kp N0   &kp N6   &kp N2   &kp N8   &kp N4                                                                              &kp N4   &kp N8   &kp N2   &kp N6   &kp N0
+            &kp N1   &kp N7   &kp N3   &kp N9   &kp N5   &kp N0                                                            &kp N0   &kp N5   &kp N9   &kp N3   &kp N7   &kp N1
+            &kp N2   &kp N8   &kp N4   &kp N0   &kp N6   &kp N1                                                            &kp N1   &kp N6   &kp N0   &kp N4   &kp N8   &kp N2
+            &kp N3   &kp N9   &kp N5   &kp N1   &kp N7   &kp N2                                                            &kp N2   &kp N7   &kp N1   &kp N5   &kp N9   &kp N3
+            &kp N4   &kp N0   &kp N6   &kp N2   &kp N8   &kp N3   &kp N4   &kp N5   &kp N6      &kp N6   &kp N5   &kp N4   &kp N3   &kp N8   &kp N2   &kp N6   &kp N0   &kp N4
+            &kp N5   &kp N1   &kp N7   &kp N3   &kp N9            &kp N7   &kp N8   &kp N9      &kp N9   &kp N8   &kp N7            &kp N9   &kp N3   &kp N7   &kp N1   &kp N5
+            >;
+        };
+    };
+};
